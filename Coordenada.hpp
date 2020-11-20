@@ -12,7 +12,7 @@ private:
 
 public: 
 Coordenada (){
-    aPosicionCoordenada     = 0;
+    aPosicionCoordenada     =0;
     aSiguienteCoordenadaX   =nullptr;
     aSiguienteCoordenadaY   =nullptr;
     aCoordenadaX            =0;
@@ -36,8 +36,6 @@ Coordenada (){
         aSiguienteCoordenadaX=pSiguienteCoordenada;
     }
 
-    /**/
-
     Coordenada* getSiguienteCoordenadaY(){
         return aSiguienteCoordenadaY;
     }
@@ -45,7 +43,6 @@ Coordenada (){
     void setSiguienteCoordenadaY(Coordenada* pSiguienteCoordenada){
         aSiguienteCoordenadaY=pSiguienteCoordenada;
     }
-    /**/
 
     float getCoordenadaEjeX(){
         return aCoordenadaX;

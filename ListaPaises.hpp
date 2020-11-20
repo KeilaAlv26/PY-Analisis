@@ -15,12 +15,14 @@ using namespace std;
 class ListaPaises {
 private: 
     int             aCantidadPaises;
+    int             aPaisesEnBlanco;
     Pais*           aPrimerPais;
     Pais*           aUltimoPais;
 
 public: 
 ListaPaises (){
     aCantidadPaises =0;
+    aPaisesEnBlanco =0;
     aPrimerPais     =nullptr;
     aUltimoPais     =nullptr;
 }
@@ -31,6 +33,15 @@ ListaPaises (){
 
     void setCantidadPaises(){
         aCantidadPaises++;
+    }
+
+    
+    int getPaisesEnBlanco(){
+        return aPaisesEnBlanco;
+    }
+
+    void setPaisesEnBlanco(){
+        aPaisesEnBlanco++;
     }
 
     Pais* getPrimerPais(){
@@ -69,13 +80,35 @@ ListaPaises (){
         nuevoPais->setIdPais(pIdPais);
         nuevoPais->setNombre(pNombre);
         nuevoPais->setPosicionSVG(pPosicionSVG);
+        nuevoPais->setStringCoordenada(pCoordenadas);
         saveCoordenadas(nuevoPais, pCoordenadas);
+    }
+
+    bool eliminarPais(string pNombre)
+    {
+        Pais* anterior=nullptr;
+        for(Pais* actual=aPrimerPais; actual!=nullptr; actual=actual->getSiguientePais()){
+            if(actual->getNombre() == pNombre){
+                if(anterior==nullptr){
+                    setPrimerPais(actual->getSiguientePais());
+                    actual->setSiguientePais(nullptr);
+                    return true;
+                }
+                else{
+                    anterior->setSiguientePais(actual->getSiguientePais());
+                    return true;
+                }
+                
+            } 
+            anterior=actual;
+        }
+        return false;
     }
 
     void imprimirPaises()
     {
         for(Pais* actual=aPrimerPais; actual!= nullptr;actual=actual->getSiguientePais()){
-            cout<<actual->getNombre()<<" "<<actual->getIdPais()<<" "<<actual->getColor()<<" "<<actual->getCantidadFronteras()<<endl;
+            cout<<actual->getNombre()<<" "<<actual->getNumeroColor()<<" "<<actual->getCantidadFronteras()<<endl;
             //imprimirCoordenadasX(actual);
             //imprimirCoordenadasY(actual);
         }    
@@ -96,15 +129,6 @@ ListaPaises (){
         }
         cout<<"\n\n";
     }
-
-    /*string saveColor(string pCadenaSVG)
-    {
-        int primerDelimitador=strTok(pCadenaSVG, (char)':');
-        pCadenaSVG=pCadenaSVG.substr(primerDelimitador+1, pCadenaSVG.length());
-        int segundoDelimitador=strTok(pCadenaSVG, (char)';');
-        pCadenaSVG=pCadenaSVG.substr(0, segundoDelimitador);
-        return pCadenaSVG;
-    }*/
 
     int strTok (string pCadena, char delimitador)
     {
@@ -243,8 +267,11 @@ void comparacionDeCoordenadas(Pais* pPais, Pais* pFrontera){
 bool comparacion2(Coordenada* coordPaisX, Coordenada* coordPaisY, Pais* pPais, Pais* pFrontera){
     Coordenada* coordFronteraY=pFrontera->getPrimeraCoordenadaY();
     for(Coordenada* coordFronteraX=pFrontera->getPrimeraCoordenadaX(); coordFronteraX!= nullptr; coordFronteraX=coordFronteraX->getSiguienteCoordenadaX()){
-        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >=-1 && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=1){
-            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=-1 && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=1){
+        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >=-3 && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=20){
+            //cout<<"IF1 "<<pPais->getNombre()<< " - "<<pFrontera->getNombre()<<endl;
+            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=-3 && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=20){
+                //cout<<"IF1 "<<pPais->getNombre()<< " - "<<pFrontera->getNombre()<<endl;
+                //cout<<"SI SON" <<coordPaisY->getCoordenadaEjeY() <<" - "<< coordFronteraY->getCoordenadaEjeY()<<endl;
                 agregarFrontera(pPais, pFrontera);
                 return true;
             }

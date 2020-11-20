@@ -11,10 +11,13 @@ private:
     int                 aCantidadFronteras;
     int                 aPosicionSVG;
     int                 aCantidadPintadas;
+    int                 aNumeroColor;
     bool                aVisitado;
+    bool                aPintado;
     string              aIdPais;
     string              aColor;
     string              aNombre;
+    string              aCoordenada;
     Pais*               aSiguientePais;
     Coordenada*         aPrimeraCoordenadaX;
     Coordenada*         aUltimaCoordenadaX;
@@ -28,10 +31,13 @@ Pais (){
     aCantidadFronteras  =0;
     aPosicionSVG        =0;
     aCantidadPintadas   =0;
+    aNumeroColor        =0;
     aVisitado           =false;
+    aPintado            =false;
     aIdPais             ="";
     aColor              ="";
     aNombre             ="";
+    aCoordenada         ="";
     aSiguientePais      =nullptr;
     aPrimeraCoordenadaX =nullptr;
     aUltimaCoordenadaX  =nullptr;
@@ -65,12 +71,28 @@ Pais (){
         aCantidadPintadas++;
     }
 
+    int getNumeroColor(){
+        return aNumeroColor;
+    }
+
+    void setNumeroColor(int pNumeroColor){
+        aNumeroColor=pNumeroColor;
+    }
+
     bool getVisitado(){
         return aVisitado;
     }
 
     void setVisitado(){
         aVisitado = true;
+    }
+
+    bool getPintado(){
+        return aPintado;
+    }
+
+    void setPintado(){
+        aPintado=true;
     }
 
     string getIdPais(){
@@ -95,6 +117,14 @@ Pais (){
 
     void setNombre(string pNombre){
         aNombre=pNombre;
+    }
+
+    string getStringCoordenada(){
+        return aCoordenada;
+    }
+
+    void setStringCoordenada(string pCoordenada){
+        aCoordenada=pCoordenada;
     }
 
     Pais* getSiguientePais(){

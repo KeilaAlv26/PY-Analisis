@@ -1,39 +1,98 @@
 #ifndef DIVIDECONQUER_HPP
 #define DIVIDECONQUER_HPP
 #include "ListaPaises.hpp"
+#include "Pais.hpp"
+#include "Frontera.hpp"
+#include <cstdlib>
+#include <iostream>
 using namespace std;
 
 class DivideConquer {
 private: 
-    ListaPaises*    aListaPaises;
+    
     
 
 public: 
 DivideConquer (){
-    aListaPaises = nullptr;
+    
 }
 
-    ListaPaises* getListaPaises(){
-        return aListaPaises;
+    bool eliminarPais(ListaPaises* pLista, string pNombre)
+    {
+        Pais* anterior=nullptr;
+        for(Pais* actual=pLista->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
+            if(actual->getNombre() == pNombre){
+                anterior->setSiguientePais(actual->getSiguientePais());
+                cout<<anterior->getNombre()<<" "<<actual->getSiguientePais()->getNombre()<<endl;
+                actual->setSiguientePais(nullptr);
+                return true;
+            } 
+            anterior=actual;
+        }
+        return false;
     }
 
-    Pais* buscarPaisConMasFronteras(ListaPaises* pListaPaises){
-        int mayor=0;
-        Pais* paisConMasFronteras=nullptr;
-        for(Pais* actual=pListaPaises->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
-            if(actual->getCantidadFronteras() >= mayor && actual->getVisitado()==false){
-                paisConMasFronteras=actual;
-                mayor=paisConMasFronteras->getCantidadFronteras();
+    ListaPaises* getListaPaisesActual(ListaPaises* pListaPaises, int pCantidadColores, int pCantidadPaises){
+        string nombre, id, color, coordenada;
+        ListaPaises* listaActual=new ListaPaises();
+        Pais* temporal=nullptr;
+        int paisesEnLista=0;
+        int posicion=0;
+        if(pCantidadPaises<pCantidadColores){//si quedan pocos paises en la lista de paises
+            return pListaPaises;
+        } 
+        else {
+            for(Pais* actual=pListaPaises->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
+
+                if(actual->getVisitado()==false){
+                    id          =actual->getIdPais();
+                    color       =actual->getColor();
+                    nombre      =actual->getNombre();
+                    posicion    =actual->getPosicionSVG();
+                    coordenada  =actual->getStringCoordenada();
+                    listaActual->agregarPais(nombre, id, color, posicion, coordenada);
+                    paisesEnLista++;
+                    pCantidadPaises--;
+                    for(Frontera* fronteraTemp=actual->getPrimeraFrontera(); fronteraTemp!=nullptr; fronteraTemp=fronteraTemp->getSiguienteFrontera()){
+                        if(paisesEnLista>=pCantidadColores){
+                            return listaActual;
+                        }
+
+                        temporal=pListaPaises->buscarPais(fronteraTemp->getNombre());
+                        if(temporal==nullptr){
+                            break;
+                        }else{
+                            id=temporal->getIdPais();
+                            color=temporal->getColor();
+                            nombre=temporal->getNombre();
+                            posicion=temporal->getPosicionSVG();
+                            coordenada=temporal->getStringCoordenada();
+                            listaActual->agregarPais(nombre, id, color, posicion, coordenada);
+                            paisesEnLista++;
+                            pCantidadPaises--;
+                        }
+                    } 
+                    if (paisesEnLista >= pCantidadColores){
+                        return listaActual;
+                    }
+                }
             }
         }
-        if(paisConMasFronteras!=nullptr){
-            paisConMasFronteras->setVisitado();
-            return paisConMasFronteras;
-        }
-        return nullptr;
+        return listaActual;
     }
 
+    void imprimirListaPequena(ListaPaises* pLista){
+        for(Pais* actual=pLista->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
+            cout<<"lista  ->  " <<actual->getNombre()<<endl;
+        }
+    }
 
+    ListaPaises* cambiarEstadoVisitado(ListaPaises* pListaPaises, ListaPaises* pListaActual){
+        for(Pais* actual=pListaActual->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
+            actual->setVisitado();
+        }
+        return pListaPaises;
+    }
 
 //elije un color para pintar las fronteras dependiendo del numero de entrada;
     string elegirColor(int pColor){
@@ -61,86 +120,76 @@ DivideConquer (){
         if(pColor ==10) return turquesa;
         else return "-1";
     }
-
-//Devuelve el número del ultimo colo que pintó
-    int pintarFronteras(ListaPaises* pLista, Pais* pPais, int pColor, int cantidadColores){
-        int colorFrontera=pColor;
-        pPais->setColor(elegirColor(colorFrontera));
-        colorFrontera++;
-        Pais* paisPintado=nullptr;
-        if(cantidadColores==colorFrontera){
-            colorFrontera=0;
-        }
-        for(Frontera* actual=pPais->getPrimeraFrontera(); actual!=nullptr; actual=actual->getSiguienteFrontera()){
-            //if()
-
-            actual->setColor(elegirColor(colorFrontera));
-            paisPintado = pLista->buscarPais(actual->getNombre());
-            paisPintado->setCantidadPintadas();
-            paisPintado->setColor(actual->getColor());
-            colorFrontera++;
-            //cout<<"PINTAR "<<actual->getNombre()<<" "<<actual->getColor() <<" / "<<paisPintado->getNombre()<<" "<<paisPintado->getColor()<<endl;
-            if(cantidadColores==colorFrontera){
-                colorFrontera=0;
-            }
-        }
-        return colorFrontera;
-    }
-
-    /*void Divide(ListaPaises* pLista, int pCantidadColores){
-        int contadorPaises=0;
-        int cantidadPaises=210;
-        int a=0;
-        int colorPaises=0;
-        Pais* paisActual=nullptr;
-        while(contadorPaises!=cantidadPaises){
-            paisActual=buscarPaisConMasFronteras(pLista);
-            if(paisActual==nullptr){
-                break;
-            }
-            a++;
-            pintarFronteras(paisActual, colorPaises, pCantidadColores);
-            colorPaises++;
-            contadorPaises++;
-            if(pCantidadColores==contadorPaises){
-                contadorPaises=0;
-            }
-        }
-        pintarPaisesBlanco(pLista, pCantidadColores);
-    }*/
-
-    int Divide(ListaPaises* pLista, int pCantidadColores, int pContadorPaises, int pColorActual){
-        int cantidadPaises=211;
-        Pais* paisActual=nullptr;
-        if(pContadorPaises >= cantidadPaises){
-            return 0;
-        }else{
-            paisActual=buscarPaisConMasFronteras(pLista);
-            pColorActual = pintarFronteras(pLista, paisActual, pColorActual, pCantidadColores);
-            pContadorPaises++;
-            return Divide(pLista, pCantidadColores, pContadorPaises, pColorActual);
-        }
-
-    }
-
-    void pintarPaisesBlanco(ListaPaises* pLista, int pCantidadColores){
-        string blanco="fill:#f2f2f2;fill-rule:evenodd";
+    
+    void pintarPaises(ListaPaises* pLista, int pCantidadColores){
+        int color=0;
         for(Pais* actual=pLista->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
+            //color = rand()%pCantidadColores+1;
+            if(pCantidadColores==color){
+                actual->setColor(elegirColor(0));
+                actual->setNumeroColor(0);
+                color=1;
+            }
+            else {
+                actual->setColor(elegirColor(color));
+                actual->setNumeroColor(color);
+                color++;
+            }   
+        }
+    }
 
-            if(actual->getCantidadPintadas() >= 3){
-                actual->setColor(blanco);
+    void pintarDeBlanco(ListaPaises* pLista, int pCantidadColores){
+        int intercambio=0;
+        for(Pais* pais=pLista->getPrimerPais(); pais!=nullptr; pais=pais->getSiguientePais()){
+            while(cambiarColor(pais, pCantidadColores) != false){
+                if(pais->getCantidadPintadas()==pCantidadColores-2){
+                    cout<<"blanco"<<endl;
+                    pais->setColor("fill:#f2f2f2;fill-rule:evenodd");
+                    pais->setNumeroColor(0);
+                    pLista->setPaisesEnBlanco();
+                    break;
+                    
+                }
             }
         }
     }
 
+    bool cambiarColor(Pais* pPais, int pCantidadColores){
+        string colorPais=pPais->getColor();
+        int color=0;
+        for(Frontera* frontera=pPais->getPrimeraFrontera(); frontera!=nullptr; frontera=frontera->getSiguienteFrontera()){
+            if(frontera->getColor() == colorPais){
+                color=rand()%pCantidadColores+1;
+                if(color!=pPais->getNumeroColor()){
+                    pPais->setColor(elegirColor(color));
+                    pPais->setCantidadPintadas();
+                    return true;
+                }else{
+                    color=rand()%pCantidadColores+1;
+                    pPais->setColor(elegirColor(color));
+                    pPais->setCantidadPintadas();
+                    return true;
+                }
+                
+            }
+        } return false;
+    }
 
 
-
-
-
-
-
-
+    int Divide(ListaPaises* pListaPaises, int pCantidadColores, int pCantidadPaises, ListaPaises* pRetorno){
+	    ListaPaises* listaPaisesActuales=new ListaPaises();
+        listaPaisesActuales=getListaPaisesActual(pListaPaises, pCantidadColores, pCantidadPaises);
+        pListaPaises = cambiarEstadoVisitado(pListaPaises, listaPaisesActuales);
+        pintarPaises(listaPaisesActuales, pCantidadColores);
+        pCantidadPaises-=pCantidadColores;
+        if(pCantidadPaises<=0){
+            pintarDeBlanco(pListaPaises, pCantidadColores);
+            cout<< "PAISES EN BLANCO "<<pListaPaises->getPaisesEnBlanco()<<endl;
+            return 0;
+        } else {
+            return Divide(pListaPaises, pCantidadColores, pCantidadPaises, pRetorno);
+        }
+    }
 
 };
 #endif
