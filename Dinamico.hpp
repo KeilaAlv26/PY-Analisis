@@ -23,12 +23,11 @@ Dinamico (){
         Pais* paisActual=nullptr;
         paisActual=seleccionarPais(pLista, pCantidadColores);
         if(paisActual==nullptr){
-            cout<<"PAISES BLANCO DINAMIC "<<pLista->getPaisesEnBlanco()<<endl;
+            cout<<"Paises en blanco dinamico "<<pLista->getPaisesEnBlanco()<<endl;
             return 0;
         }else{
             return Dinamic(pLista, pCantidadColores);
         }
-        //return 0;
     }
 
 
@@ -46,7 +45,6 @@ Dinamico (){
                 }
                 colorPais=verificarColorFronteras(pLista, actual, pCantidadColores);
                 if(colorPais==0){
-                    //cout<<"BLANCO DINAMICO "<<endl;
                     actual->setColor("fill:#f2f2f2;fill-rule:evenodd");
                     pLista->setPaisesEnBlanco();
                     actual->setVisitado();
@@ -87,14 +85,11 @@ Dinamico (){
     }
 
     int verificarColorFronteras(ListaPaises* pLista, Pais* pPais, int pCantidadColores){
-        //vector de numeros
         vector<int> coloresElegidos;
         int colorFront=0;
         int colorPais=0;
         for(Frontera* actual=pPais->getPrimeraFrontera(); actual!=nullptr; actual=actual->getSiguienteFrontera()){
             if(pLista->buscarPais(actual->getNombre())->getPintado()){//verifica si el pais frontera ya fue pintado
-                //colorFront=verificarNumeroColor(pLista->buscarPais(actual->getNombre())->getColor());
-                //cout<<"SIIIIIIIIIIIIIIIIIII "<<colorFront<<endl;
                 colorFront=pLista->buscarPais(actual->getNombre())->getNumeroColor();
                 coloresElegidos.push_back(colorFront);
             }
@@ -102,32 +97,6 @@ Dinamico (){
         colorPais=seleccionarColorDePais(coloresElegidos, pCantidadColores);
         return colorPais;
     }
-
-    /*int verificarNumeroColor(string pColor){
-        string cafe="fill:#97480B;fill-rule:evenodd";
-        string azul="fill:#0241FC;fill-rule:evenodd";
-        string amarillo="fill:#F5FC02;fill-rule:evenodd";
-        string naranja="fill:#FC6802;fill-rule:evenodd";
-        string verde="fill:#16FC02;fill-rule:evenodd"; 
-        string celeste="fill:#02EFFC;fill-rule:evenodd";
-        string morado="fill:#7C02FC;fill-rule:evenodd";
-        string rojo="fill:#F9073E;fill-rule:evenodd";
-        string rosa="fill:#F907EE;fill-rule:evenodd";
-        string negro="fill:#000000;fill-rule:evenodd";
-        string turquesa="fill:#138BAF;fill-rule:evenodd";
-        if(pColor == azul) return 1;
-        if(pColor == amarillo) return 2;
-        if(pColor == naranja) return 3;
-        if(pColor == verde) return 4;
-        if(pColor == celeste) return 5;
-        if(pColor == morado) return 6;
-        if(pColor == rojo) return 7;
-        if(pColor == rosa) return 8;
-        if(pColor == negro) return 9;
-        if(pColor == turquesa) return 10;
-        if(pColor == cafe) return 11;
-        else return -1;
-    }*/
  
     string elegirColor(int pColor){
         string cafe="fill:#97480B;fill-rule:evenodd";

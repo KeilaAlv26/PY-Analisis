@@ -10,7 +10,6 @@ using namespace std;
 class DivideConquer {
 private: 
     
-    
 
 public: 
 DivideConquer (){
@@ -124,7 +123,6 @@ DivideConquer (){
     void pintarPaises(ListaPaises* pLista, int pCantidadColores){
         int color=0;
         for(Pais* actual=pLista->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
-            //color = rand()%pCantidadColores+1;
             if(pCantidadColores==color){
                 actual->setColor(elegirColor(0));
                 actual->setNumeroColor(0);
@@ -143,7 +141,6 @@ DivideConquer (){
         for(Pais* pais=pLista->getPrimerPais(); pais!=nullptr; pais=pais->getSiguientePais()){
             while(cambiarColor(pais, pCantidadColores) != false){
                 if(pais->getCantidadPintadas()==pCantidadColores-2){
-                    cout<<"blanco"<<endl;
                     pais->setColor("fill:#f2f2f2;fill-rule:evenodd");
                     pais->setNumeroColor(0);
                     pLista->setPaisesEnBlanco();
@@ -184,7 +181,7 @@ DivideConquer (){
         pCantidadPaises-=pCantidadColores;
         if(pCantidadPaises<=0){
             pintarDeBlanco(pListaPaises, pCantidadColores);
-            cout<< "PAISES EN BLANCO "<<pListaPaises->getPaisesEnBlanco()<<endl;
+            cout<< "Paises en blanco divide-conquer "<<pListaPaises->getPaisesEnBlanco()<<endl;
             return 0;
         } else {
             return Divide(pListaPaises, pCantidadColores, pCantidadPaises, pRetorno);

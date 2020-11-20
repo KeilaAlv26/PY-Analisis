@@ -13,8 +13,30 @@ ListaPaises* gListaPaises = new ListaPaises();
 ListaPaises* gListaPaises2 = new ListaPaises();
 DivideConquer* gDivideConquer = new DivideConquer();
 Dinamico* gDinamico = new Dinamico();
+int gCantidadColores=7;
+int gCantidadPaises=211;
 
 
+	ListaPaises* extraerDatosArchivo(const char *pFilename, ListaPaises* pListaPaises)
+	{
+		string nombrePais, id, color, coordenada, continente;
+		ListaPaises* listaContinente=new ListaPaises();
+		Pais* paisConMasFronteras=nullptr;
+		XMLDocument doc;
+		doc.LoadFile(pFilename);
+		XMLElement *paths = doc.RootElement()->FirstChildElement()->NextSiblingElement()->NextSiblingElement(); //Primer path
+
+		for(int indice=0; indice<gCantidadPaises; indice++){
+			paths = paths->NextSiblingElement();
+			id = (string) paths->Attribute("data-id");	
+			color = (string) paths->Attribute("style");
+			coordenada = (string) paths->Attribute("d");
+			nombrePais = (string) paths->Attribute("data-name");
+			pListaPaises->agregarPais(nombrePais, id, color, indice+1, coordenada);
+			
+		}
+		return pListaPaises;
+	}
 
     void modificarSVG(ListaPaises *paises, const char* pFileName){
         XMLDocument doc;
@@ -22,8 +44,8 @@ Dinamico* gDinamico = new Dinamico();
         XMLElement *paths = doc.RootElement()->FirstChildElement()->NextSiblingElement()->NextSiblingElement()->NextSiblingElement();
         string nombre;
         Pais* buscado = nullptr;
-        int cantidadPaises = 211;
-        for(int indice=0; indice<cantidadPaises; indice++){
+        int gCantidadPaises = 211;
+        for(int indice=0; indice<gCantidadPaises; indice++){
             nombre = (string) paths->Attribute("data-name");
             buscado = paises->buscarPais(nombre);
 			paths->SetAttribute("style", buscado->getColor().c_str());
@@ -32,73 +54,28 @@ Dinamico* gDinamico = new Dinamico();
         doc.SaveFile(pFileName);
     }
 
-	void algoritmoDinamico(const char *pFilename)
+	void algoritmoDinamico(const char *pFilename, ListaPaises* pListaPaises)
 	{
-		string lista;
-		int cantidadPaises=211;
-		int cantidadColores=11;
-		string nombrePais;
-		string id;
-		string color;
-		string coordenada;
-		string continente;
-		ListaPaises* listaContinente=new ListaPaises();
-		Pais* paisConMasFronteras=nullptr;
-		XMLDocument doc;
-		doc.LoadFile(pFilename);
-		XMLElement *paths = doc.RootElement()->FirstChildElement()->NextSiblingElement()->NextSiblingElement(); //Primer path
-
-		for(int indice=0; indice<cantidadPaises; indice++){
-			paths = paths->NextSiblingElement();
-			nombrePais = (string) paths->Attribute("data-name");
-			id = (string) paths->Attribute("data-id");	
-			color = (string) paths->Attribute("style");
-			coordenada = (string) paths->Attribute("d");
-			gListaPaises2->agregarPais(nombrePais, id, color, indice+1, coordenada);
-			
-		}
-		gListaPaises2->buscarFronteras();
-		//gListaPaises2->imprimirFronteras();
-		gDinamico->Dinamic(gListaPaises2, cantidadColores);
-		gListaPaises2->imprimirPaises();
-		modificarSVG(gListaPaises2, pFilename);
+		pListaPaises=extraerDatosArchivo(pFilename, pListaPaises);
+		pListaPaises->buscarFronteras();
+		gDinamico->Dinamic(pListaPaises, gCantidadColores);
+		//pListaPaises->imprimirPaises();
+		modificarSVG(pListaPaises, pFilename);
 	}
 
-	void algoritmoDivideConquer(const char *pFilename)
+	void algoritmoDivideConquer(const char *pFilename, ListaPaises* pListaPaises)
 	{
-		string lista;
-		int cantidadPaises=211;
-		int cantidadColores=7;
-		string nombrePais;
-		string id;
-		string color;
-		string coordenada;
-		string continente;
-		ListaPaises* listaContinente=new ListaPaises();
-		Pais* paisConMasFronteras=nullptr;
-		XMLDocument doc;
-		doc.LoadFile(pFilename);
-		XMLElement *paths = doc.RootElement()->FirstChildElement()->NextSiblingElement()->NextSiblingElement(); //Primer path
-
-		for(int indice=0; indice<cantidadPaises; indice++){
-			paths = paths->NextSiblingElement();
-			nombrePais = (string) paths->Attribute("data-name");
-			id = (string) paths->Attribute("data-id");	
-			color = (string) paths->Attribute("style");
-			coordenada = (string) paths->Attribute("d");
-			gListaPaises->agregarPais(nombrePais, id, color, indice+1, coordenada);
-			
-		}
-		gListaPaises->buscarFronteras();
+		pListaPaises=extraerDatosArchivo(pFilename, pListaPaises);
+		pListaPaises->buscarFronteras();
 		ListaPaises* list=new ListaPaises();
-		gDivideConquer->Divide(gListaPaises, cantidadColores, cantidadPaises, list);
-		modificarSVG(gListaPaises, pFilename);
+		gDivideConquer->Divide(pListaPaises, gCantidadColores, gCantidadPaises, list);
+		modificarSVG(pListaPaises, pFilename);
 	}
 
 
 int main()
 {
-	algoritmoDivideConquer("world-DivideConquer.svg");
-	algoritmoDinamico("world-Dinamico.svg");
+	algoritmoDivideConquer("world-DivideConquer.svg", gListaPaises);
+	algoritmoDinamico("world-Dinamico.svg", gListaPaises2);
     return 0;
 }
