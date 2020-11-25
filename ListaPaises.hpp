@@ -106,31 +106,6 @@ ListaPaises (){
         return false;
     }
 
-    void imprimirPaises()
-    {
-        for(Pais* actual=aPrimerPais; actual!= nullptr;actual=actual->getSiguientePais()){
-            cout<<actual->getNombre()<<" "<<actual->getNumeroColor()<<" "<<actual->getCantidadFronteras()<<endl;
-            //imprimirCoordenadasX(actual);
-            //imprimirCoordenadasY(actual);
-        }    
-    }
-
-    void imprimirCoordenadasX(Pais* pPais){
-        cout<<"X ";
-        for(Coordenada* temporal=pPais->getPrimeraCoordenadaX(); temporal!= nullptr; temporal=temporal->getSiguienteCoordenadaX()){
-            cout<<temporal->getCoordenadaEjeX()<<", ";
-        }
-        cout<<"\n\n";
-    }
-
-    void imprimirCoordenadasY(Pais* pPais){
-        cout<<"Y ";
-        for(Coordenada* temporal=pPais->getPrimeraCoordenadaY(); temporal!= nullptr; temporal=temporal->getSiguienteCoordenadaY()){
-            cout<<temporal->getCoordenadaEjeY()<<", ";
-        }
-        cout<<"\n\n";
-    }
-
     int strTok (string pCadena, char delimitador)
     {
         string nueva;
@@ -369,14 +344,6 @@ void agregarFrontera(Pais* pPais, Pais* pFrontera){
     pPais->setCantidadFronteras();
 }
 
-void imprimirFronteras(){
-    for(Pais* actual=aPrimerPais; actual!= nullptr; actual=actual->getSiguientePais()){
-        for(Frontera* temporal=actual->getPrimeraFrontera(); temporal!=nullptr; temporal=temporal->getSiguienteFrontera()){
-            cout<<actual->getNombre()<<" - "<<temporal->getNombre()<<" -> "<<temporal->getColor()<<endl;
-        }
-    }
-}
-
 Pais* buscarPais(string pNombre){
     for(Pais* actual=aPrimerPais; actual!=nullptr; actual= actual->getSiguientePais()){
         if(pNombre == actual->getNombre()){
@@ -384,8 +351,6 @@ Pais* buscarPais(string pNombre){
         }
     }return nullptr;
 }
-
-
 
 };
 

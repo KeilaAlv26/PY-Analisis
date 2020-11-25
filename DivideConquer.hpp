@@ -23,7 +23,7 @@ DivideConquer (){
         Pais* temporal=nullptr;
         int paisesEnLista=0;
         int posicion=0;
-        if(pCantidadPaises<pCantidadColores){//si quedan pocos paises en la lista de paises
+        if(pCantidadPaises<pCantidadColores){
             return pListaPaises;
         } 
         else {
@@ -173,11 +173,9 @@ DivideConquer (){
         pListaPaises = cambiarEstadoVisitado(pListaPaises, listaPaisesActuales);
         pintarPaises(listaPaisesActuales, pCantidadColores, pXML);
         pCantidadPaises-=pCantidadColores;
-        //cout<<pCantidadPaises<<endl;
         if(pCantidadPaises<=0){
 
             pintarDeBlanco(pListaPaises, pCantidadColores, pXML);
-            //pintarColindantesDeBlanco(pListaPaises);
             cout<< "Paises en blanco divide-conquer "<<pListaPaises->getPaisesEnBlanco()<<endl;
             pXML->editarTexto("cantidadPintados", 211-pListaPaises->getPaisesEnBlanco());
             pXML->editarTexto("cantidadBlancos", pListaPaises->getPaisesEnBlanco());
@@ -187,23 +185,6 @@ DivideConquer (){
             return Divide(pListaPaises, pCantidadColores, pCantidadPaises, pRetorno, pXML);
         }
     }
-
-   /* void pintarColindantesDeBlanco(ListaPaises* pLista){
-    int prueba=0;
-    for(Pais* indPais=pLista->getPrimerPais(); indPais!=nullptr; indPais=indPais->getSiguientePais()){
-        for(Frontera* indFrontera=indPais->getPrimeraFrontera(); indFrontera!=nullptr; indFrontera=indFrontera->getSiguienteFrontera()){
-            if(indPais->getColor()==pLista->buscarPais(indFrontera->getNombre())->getColor()  && pLista->buscarPais(indFrontera->getNombre())->getNumeroColor()!=0){
-                //cout<<indPais->getColor()<<" "<<indFrontera->getColor()<<endl;
-                //cout<<pLista->buscarPais(indFrontera->getNombre())->getNumeroColor()<<" "<<indFrontera->getColor()<<" "<<prueba<<endl;
-                indPais->setColor(elegirColor(0));
-                indPais->setNumeroColor(0);
-                //indPais->setNumeroColor(0);
-                pLista->setPaisesEnBlanco();
-                prueba++;
-            }
-        }
-    }
-}*/
 
 };
 #endif

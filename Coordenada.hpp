@@ -52,7 +52,7 @@ Coordenada (){
         aCoordenadaX=pCoordenadaX;
     }
 
-    float getCoordenadaEjeY(){//DEBE SELECCIONAR EN EL PARAMETRO SOLO LOS X O SOLO LOS Y
+    float getCoordenadaEjeY(){
         return aCoordenadaY;
     }
 

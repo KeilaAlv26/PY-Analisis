@@ -22,8 +22,6 @@ Dinamico (){
     int Dinamic(ListaPaises* pLista, int pCantidadColores, XMLParser *pXML, int pCantidadPaises){
         Pais* paisActual=nullptr;
         paisActual=seleccionarPais(pLista, pCantidadColores);
-        //pXML->modificarSVG(paisActual, "world-Dinamico.svg");
-        //if(paisActual==nullptr){
         pCantidadPaises--;
         if(pCantidadPaises==0){
             cout<<"Paises en blanco dinamico "<<pLista->getPaisesEnBlanco()<<endl;
