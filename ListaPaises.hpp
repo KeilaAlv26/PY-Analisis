@@ -258,29 +258,29 @@ void comparacionDeCoordenadas(Pais* pPais, Pais* pFrontera){
     bool esFrontera=false;
     for(Coordenada* coordPaisX=pPais->getPrimeraCoordenadaX(); coordPaisX!=nullptr; coordPaisX=coordPaisX->getSiguienteCoordenadaX()){
         if(pPais->getContinente()=="Africa"){
-            esFrontera=comparacionAfrica(coordPaisX, coordPaisY, pPais, pFrontera);
+            esFrontera=comparacion(coordPaisX, coordPaisY, pPais, pFrontera, -40, 20);
             if(esFrontera){
                 break;
             }
         }if(pPais->getContinente()=="America"){
-            esFrontera=comparacionAmerica(coordPaisX, coordPaisY, pPais, pFrontera);
+            esFrontera=comparacion(coordPaisX, coordPaisY, pPais, pFrontera, -2, 15);
             if(esFrontera){
                 break;
             }
         }if(pPais->getContinente()=="Europa"){
-            esFrontera=comparacionEuropa(coordPaisX, coordPaisY, pPais, pFrontera);
+            esFrontera=comparacion(coordPaisX, coordPaisY, pPais, pFrontera, -3, 15);
             if(esFrontera){
                 break;
             }
         }if(pPais->getContinente()=="Asia"){
-            esFrontera=comparacionAsia(coordPaisX, coordPaisY, pPais, pFrontera);
+            esFrontera=comparacion(coordPaisX, coordPaisY, pPais, pFrontera, -5, 10);
             if(esFrontera){
                 break;
             }
         }
         
         else{
-            esFrontera=comparacionEuropa(coordPaisX, coordPaisY, pPais, pFrontera);
+            esFrontera=comparacion(coordPaisX, coordPaisY, pPais, pFrontera, -3, 25);
             if(esFrontera){
                 break;
             }
@@ -289,50 +289,57 @@ void comparacionDeCoordenadas(Pais* pPais, Pais* pFrontera){
     }
 }
 
-bool comparacionAfrica(Coordenada* coordPaisX, Coordenada* coordPaisY, Pais* pPais, Pais* pFrontera){
+bool comparacion(Coordenada* coordPaisX, Coordenada* coordPaisY, Pais* pPais, Pais* pFrontera, int pMenor, int pMayor){
     Coordenada* coordFronteraY=pFrontera->getPrimeraCoordenadaY();
-    for(Coordenada* coordFronteraX=pFrontera->getPrimeraCoordenadaX(); coordFronteraX!= nullptr; coordFronteraX=coordFronteraX->getSiguienteCoordenadaX()){
-        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >=-40 && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=15){
-            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=-40 && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=15){
-                agregarFrontera(pPais, pFrontera);
-                return true;
-            }
-            coordFronteraY=coordFronteraY->getSiguienteCoordenadaY();
+    if(pPais->getNombre()=="Spain" || pPais->getNombre()=="Portugal"){
+        if(pFrontera->getNombre()=="Spain" || pFrontera->getNombre()=="Portugal"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
         }
-    }return false;
-}
-
-bool comparacionEuropa(Coordenada* coordPaisX, Coordenada* coordPaisY, Pais* pPais, Pais* pFrontera){
-    Coordenada* coordFronteraY=pFrontera->getPrimeraCoordenadaY();
-    for(Coordenada* coordFronteraX=pFrontera->getPrimeraCoordenadaX(); coordFronteraX!= nullptr; coordFronteraX=coordFronteraX->getSiguienteCoordenadaX()){
-        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >=-3 && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=25){
-            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=-3 && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=25){
-                agregarFrontera(pPais, pFrontera);
-                return true;
-            }
-            coordFronteraY=coordFronteraY->getSiguienteCoordenadaY();
+    } if(pPais->getNombre()=="Indonesia" || pPais->getNombre()=="Malaysia"){
+        if(pFrontera->getNombre()=="Indonesia" || pFrontera->getNombre()=="Malaysia"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
         }
-    }return false;
-}
-
-bool comparacionAmerica(Coordenada* coordPaisX, Coordenada* coordPaisY, Pais* pPais, Pais* pFrontera){
-    Coordenada* coordFronteraY=pFrontera->getPrimeraCoordenadaY();
-    for(Coordenada* coordFronteraX=pFrontera->getPrimeraCoordenadaX(); coordFronteraX!= nullptr; coordFronteraX=coordFronteraX->getSiguienteCoordenadaX()){
-        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >=-2 && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=15){
-            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=-2 && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=15){
-                agregarFrontera(pPais, pFrontera);
-                return true;
-            }
-            coordFronteraY=coordFronteraY->getSiguienteCoordenadaY();
+    } if(pPais->getNombre()=="China" || pPais->getNombre()=="Nepal"){
+        if(pFrontera->getNombre()=="China" || pFrontera->getNombre()=="Nepal"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
         }
-    }return false;
-}
-
-bool comparacionAsia(Coordenada* coordPaisX, Coordenada* coordPaisY, Pais* pPais, Pais* pFrontera){
-    Coordenada* coordFronteraY=pFrontera->getPrimeraCoordenadaY();
+    } if(pPais->getNombre()=="Myanmar" || pPais->getNombre()=="India"){
+        if(pFrontera->getNombre()=="Myanmar" || pFrontera->getNombre()=="India"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
+        }
+    } if(pPais->getNombre()=="China" || pPais->getNombre()=="Pakistan"){
+        if(pFrontera->getNombre()=="China" || pFrontera->getNombre()=="Pakistan"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
+        }
+    } if(pPais->getNombre()=="Kazakhstan" || pPais->getNombre()=="Uzbekistan"){
+        if(pFrontera->getNombre()=="Kazakhstan" || pFrontera->getNombre()=="Uzbekistan"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
+        }
+    } if(pPais->getNombre()=="Pakistan" || pPais->getNombre()=="Iran"){
+        if(pFrontera->getNombre()=="Pakistan" || pFrontera->getNombre()=="Iran"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
+        }
+    } if(pPais->getNombre()=="Kyrgyzstan" || pPais->getNombre()=="Kazakhstan"){
+        if(pFrontera->getNombre()=="Kyrgyzstan" || pFrontera->getNombre()=="Kazakhstan"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
+        }
+    } if(pPais->getNombre()=="China" || pPais->getNombre()=="Kyrgyzstan"){
+        if(pFrontera->getNombre()=="China" || pFrontera->getNombre()=="Kyrgyzstan"){
+            agregarFrontera(pPais, pFrontera);
+            return true;
+        }
+    }
     for(Coordenada* coordFronteraX=pFrontera->getPrimeraCoordenadaX(); coordFronteraX!= nullptr; coordFronteraX=coordFronteraX->getSiguienteCoordenadaX()){
-        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >=-5 && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=10){
-            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=-5 && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=10){
+        if((coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) >= pMenor && (coordPaisX->getCoordenadaEjeX() - coordFronteraX->getCoordenadaEjeX()) <=pMayor){
+            if((coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) >=pMenor && (coordPaisY->getCoordenadaEjeY() - coordFronteraY->getCoordenadaEjeY()) <=pMayor){
                 agregarFrontera(pPais, pFrontera);
                 return true;
             }
