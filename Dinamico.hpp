@@ -19,14 +19,21 @@ Dinamico (){
 
 
 
-    int Dinamic(ListaPaises* pLista, int pCantidadColores){
+    int Dinamic(ListaPaises* pLista, int pCantidadColores, XMLParser *pXML, int pCantidadPaises){
         Pais* paisActual=nullptr;
         paisActual=seleccionarPais(pLista, pCantidadColores);
-        if(paisActual==nullptr){
+        //pXML->modificarSVG(paisActual, "world-Dinamico.svg");
+        //if(paisActual==nullptr){
+        pCantidadPaises--;
+        if(pCantidadPaises==0){
             cout<<"Paises en blanco dinamico "<<pLista->getPaisesEnBlanco()<<endl;
+            pXML->editarTexto("cantidadPintados", 211-pLista->getPaisesEnBlanco());
+            pXML->editarTexto("cantidadBlancos", pLista->getPaisesEnBlanco());
+            pXML->modificarSVG(pLista, "world-Dinamico.svg");
+            pXML->guardarArchivo("world-Dinamico.svg");
             return 0;
         }else{
-            return Dinamic(pLista, pCantidadColores);
+            return Dinamic(pLista, pCantidadColores, pXML, pCantidadPaises);
         }
     }
 

@@ -18,6 +18,7 @@ private:
     string              aColor;
     string              aNombre;
     string              aCoordenada;
+    string              aContinente;
     Pais*               aSiguientePais;
     Coordenada*         aPrimeraCoordenadaX;
     Coordenada*         aUltimaCoordenadaX;
@@ -38,6 +39,7 @@ Pais (){
     aColor              ="";
     aNombre             ="";
     aCoordenada         ="";
+    aContinente         ="";
     aSiguientePais      =nullptr;
     aPrimeraCoordenadaX =nullptr;
     aUltimaCoordenadaX  =nullptr;
@@ -125,6 +127,14 @@ Pais (){
 
     void setStringCoordenada(string pCoordenada){
         aCoordenada=pCoordenada;
+    }
+
+    string getContinente(){
+        return aContinente;
+    }
+
+    void setContinente(string pContinente){
+        aContinente=pContinente;
     }
 
     Pais* getSiguientePais(){

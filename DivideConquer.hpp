@@ -3,6 +3,7 @@
 #include "ListaPaises.hpp"
 #include "Pais.hpp"
 #include "Frontera.hpp"
+#include "XMLParser.hpp"
 #include <cstdlib>
 #include <iostream>
 using namespace std;
@@ -16,23 +17,8 @@ DivideConquer (){
     
 }
 
-    bool eliminarPais(ListaPaises* pLista, string pNombre)
-    {
-        Pais* anterior=nullptr;
-        for(Pais* actual=pLista->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
-            if(actual->getNombre() == pNombre){
-                anterior->setSiguientePais(actual->getSiguientePais());
-                cout<<anterior->getNombre()<<" "<<actual->getSiguientePais()->getNombre()<<endl;
-                actual->setSiguientePais(nullptr);
-                return true;
-            } 
-            anterior=actual;
-        }
-        return false;
-    }
-
     ListaPaises* getListaPaisesActual(ListaPaises* pListaPaises, int pCantidadColores, int pCantidadPaises){
-        string nombre, id, color, coordenada;
+        string nombre, id, color, coordenada, continente;
         ListaPaises* listaActual=new ListaPaises();
         Pais* temporal=nullptr;
         int paisesEnLista=0;
@@ -49,7 +35,8 @@ DivideConquer (){
                     nombre      =actual->getNombre();
                     posicion    =actual->getPosicionSVG();
                     coordenada  =actual->getStringCoordenada();
-                    listaActual->agregarPais(nombre, id, color, posicion, coordenada);
+                    continente  =actual->getContinente();
+                    listaActual->agregarPais(nombre, id, color, posicion, coordenada, continente);
                     paisesEnLista++;
                     pCantidadPaises--;
                     for(Frontera* fronteraTemp=actual->getPrimeraFrontera(); fronteraTemp!=nullptr; fronteraTemp=fronteraTemp->getSiguienteFrontera()){
@@ -66,7 +53,8 @@ DivideConquer (){
                             nombre=temporal->getNombre();
                             posicion=temporal->getPosicionSVG();
                             coordenada=temporal->getStringCoordenada();
-                            listaActual->agregarPais(nombre, id, color, posicion, coordenada);
+                            continente  =temporal->getContinente();
+                            listaActual->agregarPais(nombre, id, color, posicion, coordenada, continente);
                             paisesEnLista++;
                             pCantidadPaises--;
                         }
@@ -95,7 +83,7 @@ DivideConquer (){
 
 //elije un color para pintar las fronteras dependiendo del numero de entrada;
     string elegirColor(int pColor){
-        string cafe="fill:#97480B;fill-rule:evenodd";
+        string blanco="fill:#f2f2f2;fill-rule:evenodd";
         string azul="fill:#0241FC;fill-rule:evenodd";
         string amarillo="fill:#F5FC02;fill-rule:evenodd";
         string naranja="fill:#FC6802;fill-rule:evenodd";
@@ -106,7 +94,8 @@ DivideConquer (){
         string rosa="fill:#F907EE;fill-rule:evenodd";
         string negro="fill:#000000;fill-rule:evenodd";
         string turquesa="fill:#138BAF;fill-rule:evenodd";
-        if(pColor ==0) return cafe;
+        string cafe="fill:#97480B;fill-rule:evenodd";
+        if(pColor ==0) return blanco;
         if(pColor ==1) return azul;
         if(pColor ==2) return amarillo;
         if(pColor ==3) return naranja;
@@ -117,16 +106,17 @@ DivideConquer (){
         if(pColor ==8) return rosa;
         if(pColor ==9) return negro;
         if(pColor ==10) return turquesa;
+        if(pColor ==11) return cafe;
         else return "-1";
     }
     
-    void pintarPaises(ListaPaises* pLista, int pCantidadColores){
-        int color=0;
+    void pintarPaises(ListaPaises* pLista, int pCantidadColores, XMLParser *pXML){
+        int color=1;
         for(Pais* actual=pLista->getPrimerPais(); actual!=nullptr; actual=actual->getSiguientePais()){
             if(pCantidadColores==color){
-                actual->setColor(elegirColor(0));
-                actual->setNumeroColor(0);
-                color=1;
+                actual->setColor(elegirColor(1));
+                actual->setNumeroColor(1);
+                color=2;
             }
             else {
                 actual->setColor(elegirColor(color));
@@ -134,59 +124,86 @@ DivideConquer (){
                 color++;
             }   
         }
+        pXML->modificarSVG(pLista, "world-DivideConquer.svg");
+        pXML->guardarArchivo("world-DivideConquer.svg");
     }
 
-    void pintarDeBlanco(ListaPaises* pLista, int pCantidadColores){
-        int intercambio=0;
+    void pintarDeBlanco(ListaPaises* pLista, int pCantidadColores, XMLParser *pXML){
         for(Pais* pais=pLista->getPrimerPais(); pais!=nullptr; pais=pais->getSiguientePais()){
-            while(cambiarColor(pais, pCantidadColores) != false){
-                if(pais->getCantidadPintadas()==pCantidadColores-2){
-                    pais->setColor("fill:#f2f2f2;fill-rule:evenodd");
+            while(cambiarColor(pLista, pais, pCantidadColores)){
+                if(pais->getCantidadPintadas()>=pCantidadColores-1){
+                    pais->setColor(elegirColor(0));
                     pais->setNumeroColor(0);
                     pLista->setPaisesEnBlanco();
                     break;
-                    
                 }
             }
         }
+        pXML->modificarSVG(pLista, "world-DivideConquer.svg");
+        pXML->guardarArchivo("world-DivideConquer.svg");
     }
 
-    bool cambiarColor(Pais* pPais, int pCantidadColores){
+    bool cambiarColor(ListaPaises* pLista, Pais* pPais, int pCantidadColores){
         string colorPais=pPais->getColor();
         int color=0;
         for(Frontera* frontera=pPais->getPrimeraFrontera(); frontera!=nullptr; frontera=frontera->getSiguienteFrontera()){
-            if(frontera->getColor() == colorPais){
+            if(pLista->buscarPais(frontera->getNombre())->getColor() == colorPais){ //si tiene un color igual al de una de sus fronteras
                 color=rand()%pCantidadColores+1;
                 if(color!=pPais->getNumeroColor()){
                     pPais->setColor(elegirColor(color));
+                    pPais->setNumeroColor(color);
                     pPais->setCantidadPintadas();
                     return true;
                 }else{
-                    color=rand()%pCantidadColores+1;
+                    //color=rand()%pCantidadColores+1;
                     pPais->setColor(elegirColor(color));
+                    pPais->setNumeroColor(color);
                     pPais->setCantidadPintadas();
                     return true;
                 }
-                
             }
-        } return false;
+        }
+        return false;
     }
 
 
-    int Divide(ListaPaises* pListaPaises, int pCantidadColores, int pCantidadPaises, ListaPaises* pRetorno){
+    int Divide(ListaPaises* pListaPaises, int pCantidadColores, int pCantidadPaises, ListaPaises* pRetorno, XMLParser *pXML){
 	    ListaPaises* listaPaisesActuales=new ListaPaises();
         listaPaisesActuales=getListaPaisesActual(pListaPaises, pCantidadColores, pCantidadPaises);
         pListaPaises = cambiarEstadoVisitado(pListaPaises, listaPaisesActuales);
-        pintarPaises(listaPaisesActuales, pCantidadColores);
+        pintarPaises(listaPaisesActuales, pCantidadColores, pXML);
         pCantidadPaises-=pCantidadColores;
+        //cout<<pCantidadPaises<<endl;
         if(pCantidadPaises<=0){
-            pintarDeBlanco(pListaPaises, pCantidadColores);
+
+            pintarDeBlanco(pListaPaises, pCantidadColores, pXML);
+            //pintarColindantesDeBlanco(pListaPaises);
             cout<< "Paises en blanco divide-conquer "<<pListaPaises->getPaisesEnBlanco()<<endl;
+            pXML->editarTexto("cantidadPintados", 211-pListaPaises->getPaisesEnBlanco());
+            pXML->editarTexto("cantidadBlancos", pListaPaises->getPaisesEnBlanco());
+            pXML->guardarArchivo("world-DivideConquer.svg");
             return 0;
         } else {
-            return Divide(pListaPaises, pCantidadColores, pCantidadPaises, pRetorno);
+            return Divide(pListaPaises, pCantidadColores, pCantidadPaises, pRetorno, pXML);
         }
     }
+
+   /* void pintarColindantesDeBlanco(ListaPaises* pLista){
+    int prueba=0;
+    for(Pais* indPais=pLista->getPrimerPais(); indPais!=nullptr; indPais=indPais->getSiguientePais()){
+        for(Frontera* indFrontera=indPais->getPrimeraFrontera(); indFrontera!=nullptr; indFrontera=indFrontera->getSiguienteFrontera()){
+            if(indPais->getColor()==pLista->buscarPais(indFrontera->getNombre())->getColor()  && pLista->buscarPais(indFrontera->getNombre())->getNumeroColor()!=0){
+                //cout<<indPais->getColor()<<" "<<indFrontera->getColor()<<endl;
+                //cout<<pLista->buscarPais(indFrontera->getNombre())->getNumeroColor()<<" "<<indFrontera->getColor()<<" "<<prueba<<endl;
+                indPais->setColor(elegirColor(0));
+                indPais->setNumeroColor(0);
+                //indPais->setNumeroColor(0);
+                pLista->setPaisesEnBlanco();
+                prueba++;
+            }
+        }
+    }
+}*/
 
 };
 #endif
